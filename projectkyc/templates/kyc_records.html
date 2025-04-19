@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KYC Records</title>
+  <style>
+    body { background: linear-gradient(to right, #8360c3, #2ebf91); font-family: Arial; text-align: center; padding-top: 50px; color: white; }
+    input, button { margin: 10px; padding: 10px; border-radius: 5px; }
+    .record { background: rgba(255,255,255,0.1); margin: 10px auto; padding: 15px; border-radius: 10px; width: 60%; }
+  </style>
+</head>
+<body>
+  <h1>View KYC Records</h1>
+  <input type="text" id="username" placeholder="Enter username" />
+  <button onclick="fetchRecords()">Fetch Records</button>
+
+  <div id="records"></div>
+
+  <script>
+    function fetchRecords() {
+      const username = document.getElementById('username').value;
+      fetch('/kyc-records/' + username)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('records');
+          container.innerHTML = '';
+          data.records.forEach(rec => {
+            const div = document.createElement('div');
+            div.className = 'record';
+            div.innerHTML = `
+              <strong>Image:</strong> ${rec.image_filename}<br/>
+              <strong>Name:</strong> ${rec.name}<br/>
+              <strong>DOB:</strong> ${rec.dob}<br/>
+              <strong>Gender:</strong> ${rec.gender}<br/>
+              <strong>ID Number:</strong> ${rec.id_number}<br/>
+              <strong>Father's Name:</strong> ${rec.father_name}<br/>
+            `;
+            container.appendChild(div);
+          });
+        });
+    }
+  </script>
+</body>
+</html>

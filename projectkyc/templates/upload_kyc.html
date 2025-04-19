@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload KYC</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+      margin: 0;
+    }
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+    }
+    input, button {
+      display: block;
+      margin: 15px auto;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background-color: #ffffff;
+      color: #185a9d;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upload KYC Document</h1>
+  <form id="kycForm" enctype="multipart/form-data">
+    <input type="text" name="username" placeholder="Enter Username" required />
+    <input type="file" name="kyc_doc" accept="image/*" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <script>
+    document.getElementById("kycForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch("/upload-kyc", {
+        method: "POST",
+        body: formData
+      })
+      .then(async res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
+          alert(data.message);
+        } else {
+          const errorText = await res.text();
+          console.error("Unexpected HTML:", errorText);
+          alert("Server error. Check console for more details.");
+        }
+      })
+      .catch(err => {
+        console.error("Fetch failed:", err);
+        alert("Upload failed: " + err.message);
+      });
+    });
+  </script>
+</body>
+</html>

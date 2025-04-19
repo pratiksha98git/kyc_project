@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KYC Details</title>
+  <style>
+    body { background: linear-gradient(to right, #f7971e, #ffd200); font-family: Arial; text-align: center; padding-top: 50px; color: black; }
+    input, button { margin: 10px; padding: 10px; border-radius: 5px; }
+    .details { background: rgba(255,255,255,0.4); padding: 20px; border-radius: 10px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>Get KYC Details</h1>
+  <input type="text" id="docId" placeholder="Enter Document ID" />
+  <button onclick="fetchDetails()">Get Details</button>
+
+  <div class="details" id="details"></div>
+
+  <script>
+    function fetchDetails() {
+      const docId = document.getElementById('docId').value;
+      fetch('/kyc-details/' + docId)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('details');
+          if (data.record) {
+            const rec = data.record;
+            container.innerHTML = `
+              <strong>Image:</strong> ${rec.image_filename}<br/>
+              <strong>Name:</strong> ${rec.name}<br/>
+              <strong>DOB:</strong> ${rec.dob}<br/>
+              <strong>Gender:</strong> ${rec.gender}<br/>
+              <strong>ID Number:</strong> ${rec.id_number}<br/>
+              <strong>Father's Name:</strong> ${rec.father_name}<br/>
+            `;
+          } else {
+            container.innerHTML = `<p>${data.message}</p>`;
+          }
+        });
+    }
+  </script>
+</body>
+</html>
